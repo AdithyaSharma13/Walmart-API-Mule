@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-            bat 'mvn clean install'
+            bat 'mvn -DskipMunitTests deploy -DmuleDeploy'
       }
     }
 
@@ -27,7 +27,7 @@ pipeline {
         APP_NAME = 'sandbox-walmart-AS'
       }
       steps {
-            bat 'mvn package deploy -DmuleDeploy -Dmule.version="4.4.0" -Danypoint.username="Adithya-Oct" -Danypoint.password="Adi@2020" -Dcloudhub.app="sandbox-walmart-AS" -Dcloudhub.environment="Sandbox" -Dcloudhub.bg="abcd" -Dcloudhub.worker="Micro"'
+            bat 'mvn -DskipMunitTests deploy -DmuleDeploy -Dmule.version="4.4.0" -Danypoint.username="Adithya-Oct" -Danypoint.password="Adi@2020" -Dcloudhub.app="sandbox-walmart-AS" -Dcloudhub.environment="Sandbox" -Dcloudhub.bg="abcd" -Dcloudhub.worker="Micro"'
       }
     }
     
