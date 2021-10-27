@@ -1,0 +1,37 @@
+#%RAML 1.0
+
+title: Walmart-raml
+
+/products:
+  /get-details:
+    get:
+      description: Get the product details placed by the customer
+      queryParameters:
+        usItemId:
+          type: number
+          required: true
+          example: 55885487
+            
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/getProductexample.json
+
+/stores:
+  /list:
+    get:
+      description: Find the nearest store which is open for 24 hours by iterating through the list of available stores.
+      queryParameters:
+        postalCode:
+          type: number
+          required: true
+          example: 75204
+            
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/getStoreexample.json
+                
+              
