@@ -8,9 +8,6 @@
 		http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
 		http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-		<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="40684682-c001-43cb-98e1-34738a0ca5c4" >
-		<http:listener-connection host="0.0.0.0" port="8082" />
-	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2cfef8ec-86b0-490d-86c3-8fd6c60207fe" basePath="/products">
 		<http:request-connection host="rapidapi.com" port="80"/>
 	</http:request-config>
@@ -18,9 +15,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:request-connection host="rapidapi.com" port="80"/>
 	</http:request-config>
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="32b9e088-c7b7-457a-8ae5-d08db71c8183" >
-		<db:my-sql-connection host="db4free.net " user="c4ebatch5" password="c4ebatch@5 " database=" testdbc45 " port="3306"/>
+		<db:my-sql-connection host="${db.Host}" user="${db.User}" password="${db.Password}" database="${db.dbname}" port="${db.Port}"/>
 	</db:config>
 	<configuration doc:name="Configuration" doc:id="e2f0e5b8-569a-41aa-b420-e0109dba92c5" defaultErrorHandler-ref="globalError_Handler" />
+	<configuration-properties doc:name="Configuration properties" doc:id="b042a3a3-5c9a-4d55-ac18-8c148f98b7b2" file="config.yaml" />
 	<error-handler name="globalError_Handler" doc:id="ba57a0c6-7ceb-4833-95f1-01e1238c7a4c" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f719ab70-2bc5-478c-92e5-3a5857fd9c32" type="HTTP:CONNECTIVITY,HTTP:NOT_FOUND">
 			<ee:transform doc:name="Transform Message" doc:id="bb2812b7-5b58-401d-9050-83df69146f87" >
@@ -44,12 +42,12 @@ output application/json
 			<ee:transform doc:name="Transform Message" doc:id="f19a2614-571a-4b8a-a65c-14e8dd45ca3c">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
 { "message" : error.description}]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
-					<ee:set-variable variableName="httpStutus"><![CDATA[%dw 2.0
+					<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
 output application/json
 ---
 "400"]]></ee:set-variable>

@@ -1,0 +1,16 @@
+http:
+  PbasePath:"/products"
+  SbasePath:"/stores"
+  Host:"rapidapi.com"
+  Port:"80"
+  
+db:
+  Host: "db4free.net"
+  Port: "3306"
+  User: "c4ebatch5"
+  Password: "c4ebatch@5"
+  dbname: "testdbc45"
+  
+X-Rapidapi-Key: "3023a67861msh0eb707c9fd31682p12e9c9jsn4bd95787f3d4"
+X-Rapidapi-Host: "walmart.p.rapidapi.com"
+Host: "walmart.p.rapidapi.com"

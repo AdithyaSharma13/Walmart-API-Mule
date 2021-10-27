@@ -11,9 +11,9 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"X-RapidAPI-Host" : "walmart.p.rapidapi.com",
-	"Host" : "walmart.p.rapidapi.com",
-	"X-RapidAPI-Key" : "3023a67861msh0eb707c9fd31682p12e9c9jsn4bd95787f3d4"
+	"X-Rapidapi-Host" : p('X-Rapidapi-Host'),
+	"X-Rapidapi-Key" :  p('X-Rapidapi-Key'),
+	"Host" : p('Host')
 }]]]></http:headers>
 			<http:query-params><![CDATA[#[output application/java
 ---
@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		</http:request>
 		<choice doc:name="Choice" doc:id="558d1ae7-6519-412d-8d7b-3d6e62abab1d" >
 			<when expression='#[! isEmpty(payload.data.product)]'>
-				<ee:transform doc:name="Transform Message" doc:id="976c1ee8-8f88-485a-a278-1f7435325d32">
+				<ee:transform doc:name="Product Details payload" doc:id="976c1ee8-8f88-485a-a278-1f7435325d32">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -31,7 +31,7 @@ output application/json
 payload ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-				<ee:transform doc:name="Transform Message" doc:id="a7a2ad62-6b1b-42a0-9ba9-4ca727952f6b">
+				<ee:transform doc:name="ProductDetails Field values as Variables" doc:id="a7a2ad62-6b1b-42a0-9ba9-4ca727952f6b">
 			<ee:message>
 			</ee:message>
 			<ee:variables>
@@ -49,20 +49,12 @@ output application/java
 payload.data.product.orderLimit]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="324b8da0-6788-497c-a56c-adf92b7fe6e3" message="completed" />
+				<logger level="INFO" doc:name="Logger" doc:id="324b8da0-6788-497c-a56c-adf92b7fe6e3" message="Get product Details flow has ended successfully and moving to get store detail flow" />
 				<flow-ref doc:name="Flow Reference" doc:id="e8e675be-75a0-4d18-bf0f-18cfbeea84be" name="Store-implementation-api-storeFlow" />
 			</when>
 			<otherwise >
-				<set-payload value="#[payload]" doc:name="Set Payload" doc:id="d067e869-0ef6-48fc-88c1-ea1b7827670a" />
+				<logger level="INFO" doc:name="Logger" doc:id="10f7f1f2-4edc-48ca-a99a-2df201c92fd3" message="User has entered invalid input. Flow is going to terminate."/>
 				<raise-error doc:name="Raise error" doc:id="5cc21082-b6ec-41a0-a5e8-7f242758f36d" type="INPUT:INVALID_DATA" description="Please enter the valid OrderId"/>
-				<ee:transform doc:name="Transform Message" doc:id="ac1b2c01-d735-46a6-bf19-36ff783b1f49" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{"message":"Please validate your input"}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
 			</otherwise>
 		</choice>
 	</sub-flow>
@@ -71,9 +63,9 @@ output application/json
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	"X-RapidAPI-Host" : "walmart.p.rapidapi.com",
-	"Host" : "walmart.p.rapidapi.com",
-	"X-RapidAPI-Key" : "3023a67861msh0eb707c9fd31682p12e9c9jsn4bd95787f3d4"
+	"X-RapidAPI-Host" : p('X-Rapidapi-Host'),
+	"Host" : p('Host'),
+	"X-RapidAPI-Key" : p('X-Rapidapi-Key')
 }]]]></http:headers>
 			<http:query-params ><![CDATA[#[output application/java
 ---
@@ -81,7 +73,7 @@ output application/json
 	"postalCode" : payload.data.product.location.postalCode
 }]]]></http:query-params>
 		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="8d5bc2ab-837c-41a2-a40d-f9d616842917" >
+		<ee:transform doc:name="Store Detail Payload" doc:id="8d5bc2ab-837c-41a2-a40d-f9d616842917" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -89,13 +81,12 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<ee:transform doc:name="Transform Message" doc:id="ce361843-995f-4a2b-a99a-53df90444cf2" >
+		<ee:transform doc:name="Store Details Field Values as Variable" doc:id="ce361843-995f-4a2b-a99a-53df90444cf2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
-{
-}]]></ee:set-payload>
+{}]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="storeId" ><![CDATA[%dw 2.0
@@ -121,12 +112,12 @@ output application/json
 "Not Present"]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="e294df26-9c17-4901-942e-ca098537c3cf" message='store flow completed'/>
+		<logger level="INFO" doc:name="Logger" doc:id="e294df26-9c17-4901-942e-ca098537c3cf" message='Get Store Details flow has completed successfully and moving to database implementation flow'/>
 		<flow-ref doc:name="Flow Reference" doc:id="ffa0b2d3-80dc-4a72-b225-7ebd98d77abe" name="database-implementation-apiSub_Flow"/>
+		<set-payload value='#["Your order will be delivered at "++ vars.storeName]' doc:name="Set Payload" doc:id="ab25ebe2-7c6f-4e2a-a4e3-78b557512602" />
 	</sub-flow>
 	<sub-flow name="database-implementation-apiSub_Flow" doc:id="1f096bf3-f88a-46f6-bb97-9ed19e8ab016" >
-		<logger level="INFO" doc:name="Logger" doc:id="8ebf826d-4754-447a-9751-71f14164db49" />
-		<db:insert doc:name="Insert" doc:id="e7332456-ac56-4710-b8c0-3e06156a2583" config-ref="Database_Config">
+		<db:insert doc:name="Insert into testdbc45" doc:id="e7332456-ac56-4710-b8c0-3e06156a2583" config-ref="Database_Config">
 			<db:sql><![CDATA[insert into testdbc45.walmartstore (order_id,store_id,store_name,store_address,store_distance,store_contact_number,product_type_id,quantity) values (:order_id,:store_id,:store_name,:store_address,:store_distance,:store_contact_number,:product_type_id,:quantity)]]></db:sql>
 			<db:input-parameters><![CDATA[#[{
  "order_id":vars.Orderid,
@@ -139,16 +130,5 @@ output application/json
  "quantity":vars.quantity
  }]]]></db:input-parameters>
 		</db:insert>
-		<logger level="INFO" doc:name="Logger" doc:id="14be881c-b566-478d-b541-870fe2719a42" message="flow completed"/>
-		<ee:transform doc:name="Transform Message" doc:id="6f4b9b4f-a1a5-41c0-80b7-9cad898fa57d" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message":"Success"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</sub-flow>
 </mule>
